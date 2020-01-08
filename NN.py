@@ -33,10 +33,11 @@ class NN():
         for layer in s.NNLayers:
             inp = layer.forwardPropogate(inp)
         s.lastActivation = inp
+        return inp
 
     def predict(s, inp):
         out = s.forwardPass(inp)
-        return np.argmax(out)
+        return np.argmax(out, axis=0)
 
     def cost(s, Y):
         m = Y.shape[1]

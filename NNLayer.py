@@ -16,7 +16,7 @@ class NNLayer():
         s.numOutputs = numOutputs
         s.activation = activation
         if randomize:
-            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)/1000
+            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)*1.0e-4
             s.bias = np.zeros((s.numOutputs, 1))
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
@@ -32,6 +32,7 @@ class NNLayer():
         return A
 
     def backwardPropogate(s, dA):
+        m = dA.shape[1]
         z = s.cache['Z']
         if s.activation == identity:
             gpz = z
@@ -47,13 +48,14 @@ class NNLayer():
         dZ = np.multiply(gpz, dA)
         aPrev = s.cache['Aprev']
         dW = np.dot(dZ, aPrev.T)
-        db = np.copy(dZ)
+        db = np.sum(dZ, axis=1).reshape(s.bias.shape)
         dAprev = np.dot(s.W.T,dZ)
         s.cache['dW'] = dW
         s.cache['db'] = db
+        s.cache['m'] = m
         return dAprev
 
     def updateParams(s, learningRate = 0.001, lambd = 0.001):
-        s.W    = (1-lambd)*s.W - learningRate * s.cache['dW']
-        s.bias = s.bias        - learningRate * s.cache['db']
+        s.W    = (1-lambd)*s.W - learningRate * s.cache['dW'] / s.cache['m']
+        s.bias = s.bias        - learningRate * s.cache['db'] / s.cache['m']
     
