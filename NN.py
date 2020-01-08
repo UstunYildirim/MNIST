@@ -1,6 +1,5 @@
 import numpy as np
 from NNLayer import *
-from Game import *
 
 class NN():
 
