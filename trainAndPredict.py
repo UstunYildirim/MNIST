@@ -23,12 +23,17 @@ testX = makeImagesCols(testX)
 trainY = makeLabelsCols(trainY)
 testY = makeLabelsCols(testY)
 
-print(trainX.shape)
-print(trainY.shape)
-print(testX.shape)
-print(testY.shape)
-exit()
+useX = trainX
+useY = trainY
+
+
 hiddenUnits = [] # empty list corresponds to no hidden units
 linearNN = NN(hiddenUnits)
+for _ in range(100):
+    linearNN.forwardPass(useX)
+    C = linearNN.cost(useY)
+    print(C)
+    linearNN.backwardPass(useY)
+    linearNN.updateParams()
 
 

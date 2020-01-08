@@ -16,7 +16,7 @@ class NNLayer():
         s.numOutputs = numOutputs
         s.activation = activation
         if randomize:
-            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(2/s.numInputs)
+            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)/1000
             s.bias = np.zeros((s.numOutputs, 1))
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
@@ -24,13 +24,12 @@ class NNLayer():
         s.cache = {}
 
     def forwardPropogate(s, inp):
-        inp = inp.reshape(s.numInputs,1)
-        z = np.dot(s.W,inp)+s.bias
+        Z = np.dot(s.W,inp)+s.bias
+        A = s.activation(Z)
         s.cache['Aprev'] = inp
-        s.cache['Z'] = z
-        a = s.activation(z)
-        s.cache['A'] = a
-        return np.array(a).flatten()
+        s.cache['Z'] = Z
+        s.cache['A'] = A
+        return A
 
     def backwardPropogate(s, dA):
         z = s.cache['Z']

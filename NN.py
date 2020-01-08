@@ -18,21 +18,30 @@ class NN():
                         activation = NNStructure[i][1]))
 
     def backwardPass(s, Y):
-        a = s.lastActivation
-        dA = -(np.divide(Y,a)-np.divide(1-Y,1-a))
+        m = Y.shape[1]
+        A = s.lastActivation
+        dA = -1/m*(np.divide(Y,A)-np.divide(1-Y,1-A))
         for layer in reversed(s.NNLayers):
             dA = layer.backwardPropogate(dA)
+
+    def updateParams(s,learningRate=0.00001,lambd=0.000001):
         for layer in s.NNLayers:
-            layer.updateParams(learningRate=0.00001,lambd=0.000001)
+            layer.updateParams(learningRate,lambd)
 
 
     def forwardPass(s, inp):
         for layer in s.NNLayers:
             inp = layer.forwardPropogate(inp)
-        s.lastActivation = inp.reshape(10,1)
-        return s.lastActivation
+        s.lastActivation = inp
 
     def predict(s, inp):
         out = s.forwardPass(inp)
         return np.argmax(out)
 
+    def cost(s, Y):
+        m = Y.shape[1]
+        A = s.lastActivation
+        C = np.sum(-1/m*(
+            np.multiply(Y, np.log(A)) + np.multiply(1-Y,np.log(1-A))
+            ).flatten())
+        return C
