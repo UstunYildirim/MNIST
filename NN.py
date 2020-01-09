@@ -24,7 +24,7 @@ class NN():
         for layer in reversed(s.NNLayers):
             dA = layer.backwardPropogate(dA)
 
-    def updateParams(s,learningRate=0.00001,lambd=0.000001):
+    def updateParams(s,learningRate=0.01,lambd=0.01):
         for layer in s.NNLayers:
             layer.updateParams(learningRate,lambd)
 

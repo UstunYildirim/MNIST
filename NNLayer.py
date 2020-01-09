@@ -21,7 +21,7 @@ class NNLayer():
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
             s.bias = np.zeros((s.numOutputs, 1))
-        s.cache = {}
+        s.cache = {'dW': 0, 'db': 0}
 
     def forwardPropogate(s, inp):
         Z = np.dot(s.W,inp)+s.bias
@@ -31,7 +31,7 @@ class NNLayer():
         s.cache['A'] = A
         return A
 
-    def backwardPropogate(s, dA):
+    def backwardPropogate(s, dA, decay = 0.9):
         m = dA.shape[1]
         z = s.cache['Z']
         if s.activation == identity:
@@ -50,8 +50,8 @@ class NNLayer():
         dW = np.dot(dZ, aPrev.T)
         db = np.sum(dZ, axis=1).reshape(s.bias.shape)
         dAprev = np.dot(s.W.T,dZ)
-        s.cache['dW'] = dW
-        s.cache['db'] = db
+        s.cache['dW'] = decay * s.cache['dW'] + dW
+        s.cache['db'] = decay * s.cache['db'] + db
         s.cache['m'] = m
         return dAprev
 

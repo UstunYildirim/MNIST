@@ -24,15 +24,19 @@ testX = makeImagesCols(testX)
 testLabels = readIdxFile('Data/t10k-labels-idx1-ubyte')
 testY = makeLabelsCols(testLabels)
 
-def linear(iterations = 100):
+def linear(iterations = 100, batchSize = 256):
     hiddenUnits = [] # empty list corresponds to no hidden units
     linearNN = NN(hiddenUnits)
     for i in range(iterations):
 
-        linearNN.forwardPass(trainX)
-        C = linearNN.cost(trainY)
-        linearNN.backwardPass(trainY)
-        linearNN.updateParams(learningRate=0.1,lambd=0.0)
+        batchIndex = (i*batchSize)%trainX.shape[1]
+        useX = trainX[:, batchIndex:batchIndex+batchSize]
+        useY = trainY[:, batchIndex:batchIndex+batchSize]
+
+        linearNN.forwardPass(useX)
+        C = linearNN.cost(useY)
+        linearNN.backwardPass(useY)
+        linearNN.updateParams(learningRate=0.1*batchSize/trainX.shape[1],lambd=0.0)
 
         pred = linearNN.predict(trainX)
         acc = trainLabels == pred
@@ -40,7 +44,7 @@ def linear(iterations = 100):
         predTest = linearNN.predict(testX)
         accTest = testLabels == predTest
 
-        print ("Run #{}\tCost: {:.2f}\tError rate: {:.2f}%\tError rate on test: {:.2f}%".format(
+        print ("Run #{:4d}\tCost: {:.2f}\tError rate: {:.2f}%\tError rate on test: {:.2f}%".format(
             i,
             C,
             100-100*np.sum(acc)/acc.shape[0],
@@ -48,6 +52,6 @@ def linear(iterations = 100):
     return linearNN
 
 
-linearNN = linear(100)
+linearNN = linear(300, batchSize=256)
 # err = gradCheck(linearNN, testX[:,:123], testY[:,:123])
 # print ('GradCheck: ', err)
