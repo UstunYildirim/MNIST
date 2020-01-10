@@ -17,12 +17,12 @@ class NN():
                         NNStructure[i][0],
                         activation = NNStructure[i][1]))
 
-    def backwardPass(s, Y):
+    def backwardPass(s, Y, decay=0.9):
         m = Y.shape[1]
         A = s.lastActivation
         dA = -1/m*(np.divide(Y,A)-np.divide(1-Y,1-A))
         for layer in reversed(s.NNLayers):
-            dA = layer.backwardPropogate(dA)
+            dA = layer.backwardPropogate(dA, decay)
 
     def updateParams(s,learningRate=0.01,lambd=0.01):
         for layer in s.NNLayers:

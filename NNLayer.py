@@ -31,7 +31,7 @@ class NNLayer():
         s.cache['A'] = A
         return A
 
-    def backwardPropogate(s, dA, decay = 0.9):
+    def backwardPropogate(s, dA, decay):
         m = dA.shape[1]
         z = s.cache['Z']
         if s.activation == identity:
