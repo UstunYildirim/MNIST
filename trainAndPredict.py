@@ -37,7 +37,7 @@ def linear(iterations = 100, batchSize = 256):
         linearNN.forwardPass(useX)
         C = linearNN.cost(useY)
         linearNN.backwardPass(useY)
-        linearNN.updateParams(learningRate=0.1*batchSize/trainX.shape[1],lambd=0.0)
+        linearNN.updateParams()
 
         pred = linearNN.predict(trainX)
         acc = trainLabels == pred
@@ -46,17 +46,11 @@ def linear(iterations = 100, batchSize = 256):
         accTest = testLabels == predTest
 
         print ("Run #{:4d}\tCost: {:.2f}\tError rate: {:.2f}%\tError rate on test: {:.2f}%".format(
-            i,
+            i+1,
             C,
             100-100*np.sum(acc)/acc.shape[0],
             100-100*np.sum(accTest)/accTest.shape[0]))
     return linearNN
-
-
-# linearNN = linear(2, batchSize=256)
-# err = gradCheck(linearNN, testX[:,:10], testY[:,:10])
-# print ('GradCheck: ', err)
-# exit()
 
 def twoLayers(iterations = 100, batchSize = 256):
     hiddenUnits = [(300,np.tanh)] # empty list corresponds to no hidden units
@@ -85,7 +79,13 @@ def twoLayers(iterations = 100, batchSize = 256):
             100-100*np.sum(accTest)/accTest.shape[0]))
     return multiLayerNN
 
-tlNN = twoLayers(10000)
+
+linearNN = linear(300, batchSize=60000)
+# err = gradCheck(linearNN, testX[:,:10], testY[:,:10])
+# print ('GradCheck: ', err)
+exit()
+
+tlNN = twoLayers(300, batchSize=256)
 #print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
 #FIXME: with ReLU gradCheck seems weird but it might be normal due to singularity at 0
 #       more investigation needed

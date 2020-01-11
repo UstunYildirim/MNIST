@@ -3,7 +3,14 @@ from NNLayer import *
 
 class NN():
 
-    def __init__(s, NNStructure): 
+    def __init__(s,
+            NNStructure,
+            learningRate = 3.0e-5,
+            lambd = 0.0,
+            decay1=0.9,
+            decay2=0.999,
+            eps=1.0e-8
+            ):
         s.NNLayers = []
         # NNStructure is a list of pairs of number of hidden units and activation functions
         # input is a 28x28 image
@@ -15,7 +22,13 @@ class NN():
             s.NNLayers.append(
                     NNLayer(NNStructure[i-1][0],
                         NNStructure[i][0],
-                        activation = NNStructure[i][1]))
+                        activation = NNStructure[i][1],
+                        learningRate = learningRate
+                        lambd = lambd
+                        decay1 = decay1
+                        decay2 = decay2
+                        eps = 1.0e-8
+                        ))
 
     def backwardPass(s, Y):
         m = Y.shape[1]

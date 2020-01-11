@@ -16,7 +16,7 @@ class NNLayer():
             numOutputs,
             randomize=True,
             activation = sigmoid,
-            learningRate = 0.001,
+            learningRate = 3.0e-5,
             lambd = 0.0,
             decay1=0.9,
             decay2=0.999,
@@ -25,7 +25,7 @@ class NNLayer():
         s.numOutputs = numOutputs
         s.activation = activation
         if randomize:
-            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)*1.0e-3
+            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)*1.0e-4
             s.bias = np.zeros((s.numOutputs, 1))
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
