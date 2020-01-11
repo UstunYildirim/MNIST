@@ -85,8 +85,8 @@ def twoLayers(iterations = 100, batchSize = 256):
             100-100*np.sum(accTest)/accTest.shape[0]))
     return multiLayerNN
 
-tlNN = twoLayers(4)
-print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
+tlNN = twoLayers(10000)
+#print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
 #FIXME: with ReLU gradCheck seems weird but it might be normal due to singularity at 0
 #       more investigation needed
 
