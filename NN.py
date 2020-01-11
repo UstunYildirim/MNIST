@@ -5,7 +5,7 @@ class NN():
 
     def __init__(s,
             NNStructure,
-            learningRate = 3.0e-5,
+            learningRate = 1.0e-3,
             lambd = 0.0,
             decay1=0.9,
             decay2=0.999,
@@ -23,16 +23,21 @@ class NN():
                     NNLayer(NNStructure[i-1][0],
                         NNStructure[i][0],
                         activation = NNStructure[i][1],
-                        learningRate = learningRate
-                        lambd = lambd
-                        decay1 = decay1
-                        decay2 = decay2
+                        learningRate = learningRate,
+                        lambd = lambd,
+                        decay1 = decay1,
+                        decay2 = decay2,
                         eps = 1.0e-8
                         ))
+        s.eps = eps
+
+    def setLearningRate(s, lr):
+        for layer in s.NNLayers:
+            layer.learningRate = lr
 
     def backwardPass(s, Y):
         m = Y.shape[1]
-        A = s.lastActivation
+        A = s.eps + s.lastActivation*(1-2*s.eps)
         dA = -1/m*(np.divide(Y,A)-np.divide(1-Y,1-A))
         for layer in reversed(s.NNLayers):
             dA = layer.backwardPropogate(dA)
@@ -54,7 +59,7 @@ class NN():
 
     def cost(s, Y):
         m = Y.shape[1]
-        A = s.lastActivation
+        A = s.eps + s.lastActivation*(1-2*s.eps) # to avoid infinities
         C = np.sum(-1/m*(
             np.multiply(Y, np.log(A)) + np.multiply(1-Y,np.log(1-A))
             ).flatten())

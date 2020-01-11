@@ -14,18 +14,19 @@ class NNLayer():
     def __init__(s,
             numInputs,
             numOutputs,
+            learningRate,
+            lambd,
+            decay1,
+            decay2,
+            eps,
             randomize=True,
-            activation = sigmoid,
-            learningRate = 3.0e-5,
-            lambd = 0.0,
-            decay1=0.9,
-            decay2=0.999,
-            eps=1.0e-8):
+            activation = sigmoid
+            ):
         s.numInputs = numInputs
         s.numOutputs = numOutputs
         s.activation = activation
         if randomize:
-            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(1/s.numInputs)*1.0e-4
+            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(2/s.numInputs)*1.0e-2
             s.bias = np.zeros((s.numOutputs, 1))
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
@@ -81,6 +82,6 @@ class NNLayer():
         Vdbcorr = s.cache['Vdb'] / (1-s.decay1**s.iteration)
         SdWcorr = s.cache['SdW'] / (1-s.decay2**s.iteration)
         Sdbcorr = s.cache['Sdb'] / (1-s.decay2**s.iteration)
-        s.W    = (1-s.lambd)*s.W - s.learningRate * VdWcorr / (np.sqrt(SdWcorr)+s.eps)
-        s.bias = s.bias          - s.learningRate * Vdbcorr / (np.sqrt(Sdbcorr)+s.eps)
+        s.W    = (1-s.lambd)*s.W - s.learningRate * np.divide(VdWcorr, (np.sqrt(SdWcorr)+s.eps))
+        s.bias = s.bias          - s.learningRate * np.divide(Vdbcorr, (np.sqrt(Sdbcorr)+s.eps))
     
