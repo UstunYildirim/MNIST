@@ -11,7 +11,16 @@ def identity(x):
 
 class NNLayer():
 
-    def __init__(s, numInputs, numOutputs, randomize=True, activation = sigmoid):
+    def __init__(s,
+            numInputs,
+            numOutputs,
+            randomize=True,
+            activation = sigmoid,
+            learningRate = 0.001,
+            lambd = 0.0,
+            decay1=0.9,
+            decay2=0.999,
+            eps=1.0e-8):
         s.numInputs = numInputs
         s.numOutputs = numOutputs
         s.activation = activation
@@ -21,7 +30,15 @@ class NNLayer():
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
             s.bias = np.zeros((s.numOutputs, 1))
-        s.cache = {'dW': 0, 'db': 0}
+        s.cache = {'dW': 0, 'db': 0,
+                'VdW': 0, 'Vdb': 0,
+                'SdW': 0, 'Sdb': 0}
+        s.learningRate = learningRate
+        s.lambd = lambd
+        s.decay1 = decay1
+        s.decay2 = decay2
+        s.eps = eps
+        s.iteration = 0
 
     def forwardPropogate(s, inp):
         Z = np.dot(s.W,inp)+s.bias
@@ -31,7 +48,7 @@ class NNLayer():
         s.cache['A'] = A
         return A
 
-    def backwardPropogate(s, dA, decay):
+    def backwardPropogate(s, dA):
         m = dA.shape[1]
         z = s.cache['Z']
         if s.activation == identity:
@@ -50,12 +67,20 @@ class NNLayer():
         dW = np.dot(dZ, aPrev.T)
         db = np.sum(dZ, axis=1).reshape(s.bias.shape)
         dAprev = np.dot(s.W.T,dZ)
-        s.cache['dW'] = decay * s.cache['dW'] + dW
-        s.cache['db'] = decay * s.cache['db'] + db
-        s.cache['m'] = m
+        s.cache['dW'] = dW
+        s.cache['db'] = db
+        s.cache['VdW'] = s.decay1 * s.cache['VdW'] + (1-s.decay1) * dW
+        s.cache['Vdb'] = s.decay1 * s.cache['Vdb'] +  (1-s.decay1) * db
+        s.cache['SdW'] = s.decay2 * s.cache['SdW'] + (1-s.decay2) * np.square(dW)
+        s.cache['Sdb'] = s.decay2 * s.cache['Sdb'] +  (1-s.decay2) * np.square(db)
         return dAprev
 
-    def updateParams(s, learningRate = 0.001, lambd = 0.001):
-        s.W    = (1-lambd)*s.W - learningRate * s.cache['dW'] / s.cache['m']
-        s.bias = s.bias        - learningRate * s.cache['db'] / s.cache['m']
+    def updateParams(s):
+        s.iteration += 1
+        VdWcorr = s.cache['VdW'] / (1-s.decay1**s.iteration)
+        Vdbcorr = s.cache['Vdb'] / (1-s.decay1**s.iteration)
+        SdWcorr = s.cache['SdW'] / (1-s.decay2**s.iteration)
+        Sdbcorr = s.cache['Sdb'] / (1-s.decay2**s.iteration)
+        s.W    = (1-s.lambd)*s.W - s.learningRate * VdWcorr / (np.sqrt(SdWcorr)+s.eps)
+        s.bias = s.bias          - s.learningRate * Vdbcorr / (np.sqrt(Sdbcorr)+s.eps)
     

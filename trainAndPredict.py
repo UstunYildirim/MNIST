@@ -59,7 +59,7 @@ def linear(iterations = 100, batchSize = 256):
 # exit()
 
 def twoLayers(iterations = 100, batchSize = 256):
-    hiddenUnits = [(20,np.tanh)] # empty list corresponds to no hidden units
+    hiddenUnits = [(300,np.tanh)] # empty list corresponds to no hidden units
     multiLayerNN = NN(hiddenUnits)
     for i in range(iterations):
 
@@ -70,7 +70,7 @@ def twoLayers(iterations = 100, batchSize = 256):
         multiLayerNN.forwardPass(useX)
         C = multiLayerNN.cost(useY)
         multiLayerNN.backwardPass(useY)
-        multiLayerNN.updateParams(learningRate=0.01*batchSize/trainX.shape[1],lambd=0.0)
+        multiLayerNN.updateParams()
 
         pred = multiLayerNN.predict(trainX)
         acc = trainLabels == pred
@@ -85,8 +85,8 @@ def twoLayers(iterations = 100, batchSize = 256):
             100-100*np.sum(accTest)/accTest.shape[0]))
     return multiLayerNN
 
-tlNN = twoLayers(300)
-#print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
+tlNN = twoLayers(4)
+print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
 #FIXME: with ReLU gradCheck seems weird but it might be normal due to singularity at 0
 #       more investigation needed
 

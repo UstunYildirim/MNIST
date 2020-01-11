@@ -7,7 +7,7 @@ def l2norm(x):
 def gradCheck(NN, X, Y, eps=1.0e-5):
     NN.forwardPass(X)
     C = NN.cost(Y)
-    NN.backwardPass(Y, decay=0.0)
+    NN.backwardPass(Y)
     grads = []
     for l in NN.NNLayers:
         grads.append((l.cache['dW'],l.cache['db']))
