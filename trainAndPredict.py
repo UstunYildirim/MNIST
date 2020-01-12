@@ -31,11 +31,15 @@ def createNN(hiddenUnits, learningRate):
 
 def training(NN, iterations = 100, batchSize = 2**7, plot=False):
     costs = []
+    m = trainX.shape[1]
+    perm = list(np.random.permutation(m))
+    shuffleX = trainX[:,perm]
+    shuffleY = trainY[:,perm]
     for i in range(1, iterations+1):
 
-        batchIndex = (i*batchSize)%trainX.shape[1]
-        useX = trainX[:, batchIndex:batchIndex+batchSize]
-        useY = trainY[:, batchIndex:batchIndex+batchSize]
+        batchIndex = (i*batchSize)%m
+        useX = shuffleX[:, batchIndex:batchIndex+batchSize]
+        useY = shuffleY[:, batchIndex:batchIndex+batchSize]
 
         if i%100 == 0:
             NN.setLearningRate(
@@ -79,14 +83,6 @@ threeLayers = createNN([
     ],
     learningRate
     )
-# nLayers = createNN([
-#     (300, ReLU),
-#     (40, ReLU),
-#     (20, ReLU),
-#     (16, ReLU),
-#     ],
-#     learningRate
-#     )
 
 training(threeLayers, iterations=1200, batchSize=2**7, plot=True)
 #print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))

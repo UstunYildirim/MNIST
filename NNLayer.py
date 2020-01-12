@@ -26,7 +26,7 @@ class NNLayer():
         s.numOutputs = numOutputs
         s.activation = activation
         if randomize:
-            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(2/s.numInputs)*1.0e-2
+            s.W = np.random.randn(s.numOutputs, s.numInputs)*np.sqrt(2/s.numInputs)*1.0e-3
             s.bias = np.zeros((s.numOutputs, 1))
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
