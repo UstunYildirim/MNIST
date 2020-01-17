@@ -10,6 +10,9 @@ from plotCost import plotCost
 def makeImagesCols(arr):
     return arr.reshape(arr.shape[0],28*28).T
 
+def normalizeImages(arr):
+    return arr/255
+
 def makeLabelsCols(arr):
     arr = arr.reshape(1, arr.shape[0])
     res = np.arange(arr.shape[0]*10) % 10
@@ -18,11 +21,13 @@ def makeLabelsCols(arr):
 
 trainX = readIdxFile('Data/train-images-idx3-ubyte')
 trainX = makeImagesCols(trainX)
+trainX = normalizeImages(trainX)
 trainLabels = readIdxFile('Data/train-labels-idx1-ubyte')
 trainY = makeLabelsCols(trainLabels)
 
 testX = readIdxFile('Data/t10k-images-idx3-ubyte')
 testX = makeImagesCols(testX)
+testX = normalizeImages(testX)
 testLabels = readIdxFile('Data/t10k-labels-idx1-ubyte')
 testY = makeLabelsCols(testLabels)
 
@@ -59,12 +64,13 @@ def training(NN, iterations = 100, batchSize = 2**7, plot=False):
         accTest = testLabels == predTest
 
         #print ("Run #{:4d}\tCost: {:.3f}\tError rate: {:.3f}%\tError rate on test: {:.3f}%".format(
-        print ("Run #{:4d}\tCost: {:.3f}\tError rate on test: {:.3f}%".format(
+        print ("Run #{:4d}\tCost: {:.5f}\tError rate on test: {:.3f}%".format(
             i,
             C,
             100-100*np.sum(accTest)/accTest.shape[0]))
     if plot:
         plotCost(costs)
+    return NN
 
 
 #linearNN = linear(300, batchSize=256)
@@ -86,7 +92,4 @@ threeLayers = createNN([
 
 training(threeLayers, iterations=1200, batchSize=2**7, plot=True)
 #print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
-#FIXME: with ReLU gradCheck seems weird but it might be normal due to singularity at 0
-#       more investigation needed
-
 
