@@ -6,6 +6,7 @@ from NNLayer import *
 import numpy as np
 from gradCheck import gradCheck
 from plotCost import plotCost
+import dataHandler
 
 def makeImagesCols(arr):
     return arr.reshape(arr.shape[0],28*28).T
@@ -46,10 +47,10 @@ def training(NN, iterations = 100, batchSize = 2**7, plot=False):
         useX = shuffleX[:, batchIndex:batchIndex+batchSize]
         useY = shuffleY[:, batchIndex:batchIndex+batchSize]
 
-        if i%100 == 0:
-            NN.setLearningRate(
-                    learningRate/(2**(int(i/100)))
-                    )
+        # if i%100 == 0:
+        #     NN.setLearningRate(
+        #             learningRate/(2**(int(i/100)))
+        #             )
 
         NN.forwardPass(useX)
         C = NN.cost(useY)
@@ -89,7 +90,18 @@ threeLayers = createNN([
     ],
     learningRate
     )
+nLayers = createNN([
+    (2000, ReLU),
+    (1500, ReLU),
+    (1000, ReLU),
+    (500, ReLU),
+    (100, ReLU),
+    (40, ReLU)
+    ],
+    learningRate
+    )
 
-training(threeLayers, iterations=1200, batchSize=2**7, plot=True)
+if __name__ == '__main__':
+    training(nLayers, iterations=2000, batchSize=2**6, plot=True)
 #print(gradCheck(tlNN, testX[:,:11], testY[:,:11]))
 

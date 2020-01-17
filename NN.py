@@ -30,10 +30,14 @@ class NN():
                         eps = 1.0e-8
                         ))
         s.eps = eps
-
+        
     def setLearningRate(s, lr):
         for layer in s.NNLayers:
             layer.learningRate = lr
+
+    def setLambd(s, l):
+        for layer in s.NNLayers:
+            layer.lambd = l
 
     def backwardPass(s, Y):
         m = Y.shape[1]
