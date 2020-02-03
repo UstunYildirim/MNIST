@@ -18,6 +18,11 @@ class kNN():
         i = np.argmax(accs)
         return (kValues[i], accs)
 
+    def errors(s, Xtest, Ytest, k):
+        m = Xs.shape[0]
+        boolMask = Ytest != [s.predict(Xs[i], k) for i in range(m)]
+        return Xtest[boolMask]
+
     def predictMany(s, Xs, k):
         m = Xs.shape[0]
         return [s.predict(Xs[i], k) for i in range(m)]
@@ -48,7 +53,7 @@ class kNN():
                 count[v] = 1
 
         maxV = 0
-        for k,n in count.items():
+        for k,n in reversed(count.items()):
             if n > maxV:
                 maxV = n
                 selectedClass = k
