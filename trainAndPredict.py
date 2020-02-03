@@ -65,10 +65,10 @@ def training(NN, iterations = 100, batchSize = 2**7, plot=False):
         accTest = testLabels == predTest
 
         #print ("Run #{:4d}\tCost: {:.3f}\tError rate: {:.3f}%\tError rate on test: {:.3f}%".format(
-        print ("Run #{:4d}\tCost: {:.5f}\tError rate on test: {:.3f}%".format(
+        print ("Run #{:4d}\tCost: {:.5f}\tError rate on test: {:.3f}%\r".format(
             i,
             C,
-            100-100*np.sum(accTest)/accTest.shape[0]))
+            100-100*np.sum(accTest)/accTest.shape[0]), end='')
     if plot:
         plotCost(costs)
     return NN
