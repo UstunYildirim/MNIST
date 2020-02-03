@@ -14,3 +14,6 @@ Linear regression with ADAM optimization and batch-gradient descent achieves 9.2
 3-Layer NN with hidden units: (300,ReLU), (40, ReLU), ADAM optimization and mini-batches of 128 achieves 5.4% error rate in 1200 iterations
 
 7-Layer NN with hidden units: (2000,ReLU), (1500,ReLU), (1000,ReLU), (500,ReLU), (100,ReLU), (40, ReLU) and ADAM optimization (with various different minibatch sizes during the whole training) achieves 1.86% error rate. The NN requires about 1.1GB of disk space.
+
+Sample cost function graph:
+[Cost](3-Layer-300r40r.png)
