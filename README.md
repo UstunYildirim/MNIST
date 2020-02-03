@@ -5,6 +5,7 @@ Data is taken from http://yann.lecun.com/exdb/mnist/index.html
 
 For a quick demo you may check out the [Notebook](Notebook.ipynb).
 
+## Fully Connected Neural Network Structures
 Linear regression with momentum achieves 9% error rate in 300 iterations
 
 Linear regression with ADAM optimization and mini-batch size of 256 achieves 9.8% error rate in 300 iterations
@@ -17,3 +18,16 @@ Linear regression with ADAM optimization and batch-gradient descent achieves 9.2
 
 Sample cost function graph:
 ![Cost](3-Layer-300r40r.png)
+
+## k-Nearest Neighbor
+
+| k | acc |
+|---|-----|
+| 1 |96.9%|
+| 2 |96.0%|
+| 3 |94.4%|
+| 5 |91.6%|
+| 9 |86.7%|
+|15 |80.5%|
+|21 |75.3%|
+

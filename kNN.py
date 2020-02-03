@@ -19,8 +19,8 @@ class kNN():
         return (kValues[i], accs)
 
     def errors(s, Xtest, Ytest, k):
-        m = Xs.shape[0]
-        boolMask = Ytest != [s.predict(Xs[i], k) for i in range(m)]
+        m = Xtest.shape[0]
+        boolMask = Ytest != [s.predict(Xtest[i], k) for i in range(m)]
         return Xtest[boolMask]
 
     def predictMany(s, Xs, k):
