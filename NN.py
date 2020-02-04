@@ -46,6 +46,14 @@ class NN():
         for layer in reversed(s.NNLayers):
             dA = layer.backwardPropogate(dA)
 
+    def cost(s, Y):
+        m = Y.shape[1]
+        A = s.eps + s.lastActivation*(1-2*s.eps) # to avoid infinities
+        C = np.sum(-1/m*(
+            np.multiply(Y, np.log(A)) + np.multiply(1-Y,np.log(1-A))
+            ).flatten())
+        return C
+
     def updateParams(s):
         for layer in s.NNLayers:
             layer.updateParams()
@@ -63,11 +71,3 @@ class NN():
     def predict(s, inp):
         out = s.forwardPass(inp)
         return np.argmax(out, axis=0)
-
-    def cost(s, Y):
-        m = Y.shape[1]
-        A = s.eps + s.lastActivation*(1-2*s.eps) # to avoid infinities
-        C = np.sum(-1/m*(
-            np.multiply(Y, np.log(A)) + np.multiply(1-Y,np.log(1-A))
-            ).flatten())
-        return C

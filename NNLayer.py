@@ -1,5 +1,9 @@
 import numpy as np
 
+def softmax(x):
+    ex = np.exp(x)
+    return ex/np.sum(ex)
+
 def sigmoid(x):
     return 1/(1+np.exp(-x))
 
@@ -60,16 +64,28 @@ class NNLayer():
         z = s.cache['Z']
         if s.activation == identity:
             gpz = z
+            dZ = np.multiply(gpz, dA)
         elif s.activation == sigmoid:
             a = s.cache['A']
             gpz = np.multiply(np.square(a),np.exp(-z))
+            dZ = np.multiply(gpz, dA)
         elif s.activation == ReLU:
             gpz = (z>0).astype(int)
+            dZ = np.multiply(gpz, dA)
         elif s.activation == np.tanh:
             gpz = np.square(2/(np.exp(z)+np.exp(-z)))
+            dZ = np.multiply(gpz, dA)
+        elif s.activation == softmax:
+            dZ = np.zeros(z.shape)
+            a = s.cache['A']
+            for j in range(m):
+                aj = a[:,j].reshape(a.shape[0],1)
+                apzj = np.diag(aj.flatten())-np.dot(aj.T,aj)
+                dZ[:,j] = np.dot(apzj, dA[:,j].reshape(a.shape[0],1)).flatten()
+            gpz = np.multiply(np.square(a),np.exp(-z))
+            dZ = np.multiply(gpz, dA)
         else:
             raise Exception('Not implemented')
-        dZ = np.multiply(gpz, dA)
         aPrev = s.cache['Aprev']
         dW = np.dot(dZ, aPrev.T)
         db = np.sum(dZ, axis=1).reshape(s.bias.shape)
