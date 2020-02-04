@@ -10,16 +10,30 @@ class kNN():
         s.k = None
 
     def optimizeK(s, Xtest, Ytest, kValues, withWeight=False):
-        accs = []
-        for k in kValues:
-            preds = np.array(s.predictMany(Xtest, k, withWeight))
-            acc = np.sum(preds == Ytest)/Ytest.shape[0]
-            accs.append(acc)
+        m = Xtest.shape[0]
+        kMax = max(kValues)
+
+        correctPredictions = np.zeros((m, len(kValues)))
+
+        for i in range(m):
+            kVotes = s.getKnn(Xtest[i], kMax)
+            for j, k in enumerate(kValues):
+                p = s.predict(Xtest[i], k, withWeight=withWeight, kVotes=kVotes[:k])
+                correctPredictions[i,j] = (p == Ytest[i])
+
+        accs = np.sum(correctPredictions, axis = 0)/m
         i = np.argmax(accs)
         return (kValues[i], accs)
 
-    def errors(s, Xtest, Ytest, k, withWeight=False):
+    def errors(s, Xtest, Ytest, k, withWeight=False, returnFirstErrorId=False):
         m = Xtest.shape[0]
+
+        if returnFirstErrorId: #for debugging purposes
+            for i in range(m):
+                p = s.predict(Xtest[i], k, withWeight)
+                if p != Ytest[i]:
+                    return i
+
         preds = s.predictMany(Xtest, k, withWeight)
         boolMask = Ytest != preds
         return Xtest[boolMask]
@@ -28,7 +42,36 @@ class kNN():
         m = Xs.shape[0]
         return [s.predict(Xs[i], k, withWeight) for i in range(m)]
 
-    def predict(s, X, k, withWeight=False, returnVotes=False):
+    def predict(s, X, k, withWeight=False, returnVotes=False, kVotes=None):
+        if kVotes == None:
+            kVotes = s.getKnn(X, k)
+
+        count = s.voteCounting(kVotes, withWeight)
+
+        v,c = max([(v,c) for (c,v) in count.items()])
+        if returnVotes:
+            return (c, count)
+        return c
+
+
+    def voteCounting(s, kVotes, withWeight=False):
+        count = {}
+        if withWeight:
+            numVotes = len(kVotes)
+            for i,v in enumerate(kVotes):
+                if v in count:
+                    count[v] = count[v] + numVotes-i
+                else:
+                    count[v] = numVotes-i
+        else:
+            for v in kVotes:
+                if v in count:
+                    count[v] = count[v] + 1
+                else:
+                    count[v] = 1
+        return count
+
+    def getKnn(s, X, k):
         m = s.Y.shape[0]
         kMinDists = []
         kVotes = []
@@ -45,28 +88,4 @@ class kNN():
             elif len(kMinDists) > k:
                 kMinDists.pop()
                 kVotes.pop()
-
-        count = {}
-        if withWeight:
-            numVotes = len(kVotes)
-            for i,v in enumerate(kVotes):
-                if v in count:
-                    count[v] = count[v] + numVotes-i
-                else:
-                    count[v] = numVotes-i
-        else:
-            for v in kVotes:
-                if v in count:
-                    count[v] = count[v] + 1
-                else:
-                    count[v] = 1
-
-
-        maxV = 0
-        for k,n in count.items():
-            if n > maxV:
-                maxV = n
-                selectedClass = k
-        if returnVotes:
-            return (k, count)
-        return k
+        return kVotes

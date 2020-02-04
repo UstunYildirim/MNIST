@@ -31,7 +31,7 @@ class NNLayer():
         else:
             s.W = np.zeros((s.numOutputs, s.numInputs))
             s.bias = np.zeros((s.numOutputs, 1))
-        s.cache = {'dW': 0, 'db': 0,
+        s.cache = {
                 'VdW': 0, 'Vdb': 0,
                 'SdW': 0, 'Sdb': 0}
         s.learningRate = learningRate
@@ -40,6 +40,12 @@ class NNLayer():
         s.decay2 = decay2
         s.eps = eps
         s.iteration = 0
+
+    def resetCache(s):
+        s.iteration = 0
+        s.cache = {
+                'VdW': 0, 'Vdb': 0,
+                'SdW': 0, 'Sdb': 0}
 
     def forwardPropogate(s, inp):
         Z = np.dot(s.W,inp)+s.bias
@@ -68,8 +74,6 @@ class NNLayer():
         dW = np.dot(dZ, aPrev.T)
         db = np.sum(dZ, axis=1).reshape(s.bias.shape)
         dAprev = np.dot(s.W.T,dZ)
-        s.cache['dW'] = dW
-        s.cache['db'] = db
         s.cache['VdW'] = s.decay1 * s.cache['VdW'] + (1-s.decay1) * dW
         s.cache['Vdb'] = s.decay1 * s.cache['Vdb'] +  (1-s.decay1) * db
         s.cache['SdW'] = s.decay2 * s.cache['SdW'] + (1-s.decay2) * np.square(dW)

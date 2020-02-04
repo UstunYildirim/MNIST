@@ -35,7 +35,7 @@ testY = makeLabelsCols(testLabels)
 def createNN(hiddenUnits, learningRate):
     return NN(hiddenUnits, learningRate = learningRate)
 
-def training(NN, iterations = 100, batchSize = 2**7, plot=False):
+def training(NN, iterations = 100, batchSize = 2**7, plot=False, resetCache=True):
     costs = []
     m = trainX.shape[1]
     perm = list(np.random.permutation(m))
@@ -65,19 +65,21 @@ def training(NN, iterations = 100, batchSize = 2**7, plot=False):
         accTest = testLabels == predTest
 
         #print ("Run #{:4d}\tCost: {:.3f}\tError rate: {:.3f}%\tError rate on test: {:.3f}%".format(
-        print ("Run #{:4d}\tCost: {:.5f}\tError rate on test: {:.3f}%\r".format(
+        print ("Run #{:4d}\tCost: {:8.5f}\tError rate on test: {:6.3f}%\r".format(
             i,
             C,
             100-100*np.sum(accTest)/accTest.shape[0]), end='')
     if plot:
         plotCost(costs)
+    if resetCache:
+        NN.resetCaches()
     return NN
 
 
 #linearNN = linear(300, batchSize=256)
 #exit()
 
-learningRate = 0.003
+learningRate = 0.001
 linearReg = createNN([], learningRate)
 twoLayers = createNN([
     (300, ReLU)

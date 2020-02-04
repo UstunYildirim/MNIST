@@ -50,6 +50,9 @@ class NN():
         for layer in s.NNLayers:
             layer.updateParams()
 
+    def resetCaches(s):
+        for layer in s.NNLayers:
+            layer.resetCache()
 
     def forwardPass(s, inp):
         for layer in s.NNLayers:
