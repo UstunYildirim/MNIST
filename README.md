@@ -21,28 +21,31 @@ Sample cost function graph:
 
 ## k-Nearest Neighbor
 
-|  k |   accuracy  | accuracy (w/ weights) |
-|----|-------------|-----------------------|
-|  1 |      96.91% |                96.91% |
-|  2 |      96.64% |                96.91% |
-|  3 |      97.14% |                97.06% |
-|  4 |      96.98% |                97.24% |
-|  5 |      96.91% |                97.16% |
-|  6 |      96.93% |                97.18% |
-|  7 |      96.92% |                97.16% |
-|  8 |      96.85% |                97.19% |
-|  9 |      96.66% |                97.09% |
-| 10 |      96.73% |                96.96% |
-| 11 |      96.69% |                96.98% |
-| 12 |      96.60% |                96.94% |
-| 13 |      96.56% |                96.89% |
-| 14 |      96.42% |                96.82% |
-| 15 |      96.35% |                96.81% |
-| 16 |      96.35% |                96.71% |
-| 17 |      96.33% |                96.68% |
-| 18 |      96.35% |                96.63% |
-| 19 |      96.30% |                96.64% |
-| 20 |      96.22% |                96.61% |
+| k         | accuracy      | accuracy (w/ weights)   | accuracy (w/ PCA)       | accuracy (w/ PCA & weights)   |
+|-----------|---------------|-------------------------|-------------------------|-------------------------------|
+| 1         | 96.91%        | 96.91%                  | 97.18%                  | 97.18%                        |
+| 2         | 96.64%        | 96.91%                  | 96.83%                  | 97.18%                        |
+| 3         | 97.14%        | 97.06%                  | 97.55%                  | 97.30%                        |
+| 4         | 96.98%        | 97.24%                  | 97.35%                  | 97.55%                        |
+| 5         | 96.91%        | 97.16%                  | 97.58%                  | 97.65%                        |
+| 6         | 96.93%        | 97.18%                  | 97.44%                  | 97.64%                        |
+| 7         | 96.92%        | 97.16%                  | 97.51%                  | 97.56%                        |
+| 8         | 96.85%        | 97.19%                  | 97.37%                  | 97.55%                        |
+| 9         | 96.66%        | 97.09%                  | 97.47%                  | 97.56%                        |
+| 10        | 96.73%        | 96.96%                  | 97.26%                  | 97.55%                        |
+| 11        | 96.69%        | 96.98%                  | 97.39%                  | 97.54%                        |
+| 12        | 96.60%        | 96.94%                  | 97.24%                  | 97.54%                        |
+| 13        | 96.56%        | 96.89%                  | 97.21%                  | 97.58%                        |
+| 14        | 96.42%        | 96.82%                  | 97.19%                  | 97.54%                        |
+| 15        | 96.35%        | 96.81%                  | 97.20%                  | 97.52%                        |
+| 16        | 96.35%        | 96.71%                  | 97.22%                  | 97.52%                        |
+| 17        | 96.33%        | 96.68%                  | 97.21%                  | 97.50%                        |
+| 18        | 96.35%        | 96.63%                  | 97.19%                  | 97.50%                        |
+| 19        | 96.30%        | 96.64%                  | 97.15%                  | 97.38%                        |
+| 20        | 96.22%        | 96.61%                  | 97.13%                  | 97.37%                        |
+| Optimal k | 3             | 4                       | 5                       | 5                             |
 
-So, we see that optimal choices of k are 3 and 4 depending on whether we are using a weighted voting system or not.
-(The weights we use are as follows: the nearest neighbor has k votes, the second closest neighbor has (k-1) votes and so on.)
+We applied PCA to reduce the number of dimensions from 784 to 30. In this case, dimensionality reduction improved the accuracy a little bit.
+However, of course, here the main advantage of PCA is it speeds up the run time by about 2.4 times.
+
+The weights we use are k for the nearest neighbor, (k-1) for the second nearest neighbor and so on.
