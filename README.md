@@ -1,5 +1,5 @@
 # MNIST
-Various different methods applied on the MNIST database
+In this project, I practice implementing various different methods for Digit Recognition (using the MNIST database) without use of high level libraries. Apart from visualization libraries, only numpy is used.
 
 Data is taken from http://yann.lecun.com/exdb/mnist/index.html
 
