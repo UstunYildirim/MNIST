@@ -73,10 +73,13 @@ class kNN():
 
     def getKnn(s, X, k):
         m = s.Y.shape[0]
+        X = X.reshape(1,X.shape[0])
         kMinDists = []
         kVotes = []
+        d = s.X-X
+        nrms = np.sum(np.square(d),axis=1)
         for i in range(m):
-            nrm = np.linalg.norm(X - s.X[i,:])
+            nrm = nrms[i]
             for j in range(len(kMinDists)):
                 if nrm < kMinDists[j]:
                     kMinDists.insert(j, nrm)
